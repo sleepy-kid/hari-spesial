@@ -9,7 +9,7 @@ export default function UndanganDetail({ params }) {
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [buka, setBuka] = useState(false); // State untuk animasi buka kado
+  const [buka, setBuka] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,53 +31,56 @@ export default function UndanganDetail({ params }) {
     if (id) fetchData();
   }, [id]);
 
-  if (loading) return <div className="min-h-screen bg-[#2c1820] flex items-center justify-center text-[#d4af37]">Mempersiapkan kado spesial...</div>;
-  if (!data) return <div className="min-h-screen bg-[#2c1820] flex items-center justify-center text-white">Maaf, Kado/Undangan tidak ditemukan.</div>;
+  if (loading) return <div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-teal-400 font-bold">Mempersiapkan kado spesial...</div>;
+  if (!data) return <div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-white">Maaf, Kado/Undangan tidak ditemukan.</div>;
 
   return (
-    <main className="min-h-screen bg-[#2c1820] text-[#fdf8f5] font-sans selection:bg-[#d4af37] selection:text-white relative overflow-hidden">
+    <main className="min-h-screen bg-[#0f172a] text-[#f8fafc] font-sans selection:bg-teal-500 selection:text-white relative overflow-hidden">
       
       {/* HALAMAN SAMPUL (COVER) */}
-      <div className={`absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#231219] transition-transform duration-1000 ease-in-out ${buka ? '-translate-y-full' : 'translate-y-0'}`}>
-        <span className="text-5xl mb-6 drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">✨</span>
-        <p className="text-[#d4af37] tracking-[0.3em] text-xs font-bold mb-4 uppercase">Kado Spesial Untuk</p>
-        <h1 className="text-4xl md:text-5xl font-serif text-white mb-10 text-center px-4">
+      <div className={`absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0f172a] transition-transform duration-1000 ease-in-out ${buka ? '-translate-y-full' : 'translate-y-0'}`}>
+        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-3xl mb-6 shadow-xl border border-slate-700">🌿</div>
+        <p className="text-teal-400 tracking-[0.3em] text-xs font-bold mb-4 uppercase">Kado Spesial Untuk</p>
+        <h1 className="text-4xl md:text-5xl font-serif text-white mb-12 text-center px-4">
           {data.jenisAcara === "Ulang Tahun" ? data.namaUltah : `${data.pria} & ${data.wanita}`}
         </h1>
         <button 
           onClick={() => setBuka(true)}
-          className="bg-[#d4af37] text-[#2c1820] px-10 py-4 rounded-full font-bold text-lg hover:bg-[#ebd59a] transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:scale-105"
+          className="bg-teal-500 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-teal-400 transition-all shadow-[0_0_20px_rgba(20,184,166,0.4)] hover:scale-105"
         >
           Buka Kado
         </button>
       </div>
 
-      {/* ISI KADO UTAMA (Terlihat setelah tombol ditekan) */}
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
-        <div className="max-w-xl w-full border border-white/10 bg-white/5 p-10 md:p-16 rounded-3xl backdrop-blur-md shadow-2xl relative overflow-hidden">
+      {/* ISI KADO UTAMA */}
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <div className="max-w-md w-full bg-slate-900 border border-slate-700 p-8 md:p-12 rounded-3xl shadow-2xl relative overflow-hidden mt-10 mb-10">
           
-          {/* Ornamen Sudut */}
-          <div className="absolute top-0 left-0 w-16 h-16 border-t border-l border-[#d4af37]/30 rounded-tl-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-16 h-16 border-b border-r border-[#d4af37]/30 rounded-br-3xl"></div>
-
-          <span className="text-4xl mb-6 block">🌸</span>
+          {/* INI DIA KODE UNTUK MEMUNCULKAN FOTONYA */}
+          {data.fotoUtama && (
+            <div className="w-full aspect-[4/5] overflow-hidden rounded-2xl mb-8 border-4 border-slate-800 shadow-inner">
+              <img src={data.fotoUtama} alt="Foto Utama" className="w-full h-full object-cover" />
+            </div>
+          )}
           
           {data.jenisAcara === "Ulang Tahun" ? (
             <>
-              <h2 className="text-2xl font-serif text-[#d4af37] mb-2 italic">Selamat Ulang Tahun</h2>
-              <h1 className="text-5xl font-extrabold text-white mb-6">{data.namaUltah}</h1>
-              <p className="text-white/70 text-lg leading-relaxed">
-                Selamat bertambah usia yang ke-<span className="font-bold text-[#d4af37]">{data.umur}</span>. <br/>
-                Di hari spesialmu pada <span className="font-bold text-white">{data.tanggalAcara}</span> ini, kami mendoakan segala kebaikan dan kebahagiaan selalu menyertaimu.
+              <h2 className="text-xl font-bold text-teal-400 mb-2 uppercase tracking-widest">Selamat Ulang Tahun</h2>
+              <h1 className="text-4xl font-extrabold text-white mb-4">{data.namaUltah}</h1>
+              <div className="w-12 h-1 bg-teal-500 mx-auto rounded-full mb-6"></div>
+              <p className="text-slate-400 leading-relaxed text-sm">
+                Selamat bertambah usia yang ke-<span className="font-bold text-white">{data.umur}</span>. <br/>
+                Di hari spesial pada <span className="font-bold text-white">{data.tanggalAcara}</span> ini, kami mendoakan kebaikan selalu menyertaimu.
               </p>
             </>
           ) : (
             <>
-              <p className="text-[#d4af37] tracking-[0.2em] text-sm font-semibold mb-6 uppercase">The Wedding Of</p>
-              <h1 className="text-5xl font-serif text-white mb-6">{data.pria} & {data.wanita}</h1>
-              <p className="text-white/70 text-lg leading-relaxed">
-                Dengan penuh rasa syukur, kami mengundang Anda untuk hadir dan memberikan doa restu pada hari bahagia kami di tanggal:<br/>
-                <span className="font-bold text-[#d4af37] text-2xl mt-4 block tracking-wide">{data.tanggalAcara}</span>
+              <p className="text-teal-400 tracking-[0.2em] text-xs font-bold mb-4 uppercase">The Wedding Of</p>
+              <h1 className="text-4xl font-serif text-white mb-4">{data.pria} & {data.wanita}</h1>
+              <div className="w-12 h-1 bg-teal-500 mx-auto rounded-full mb-6"></div>
+              <p className="text-slate-400 leading-relaxed text-sm">
+                Dengan penuh rasa syukur, kami mengundang Anda untuk hadir pada hari bahagia kami di tanggal:<br/>
+                <span className="font-bold text-white text-xl mt-4 block">{data.tanggalAcara}</span>
               </p>
             </>
           )}
