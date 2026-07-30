@@ -2,96 +2,93 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#f5f2eb] text-[#2c2c2c] font-sans selection:bg-[#d4af37] selection:text-white pb-20">
-      
+    <main className="min-h-screen bg-[#faf9f6] text-[#1c1c1c] font-sans selection:bg-[#94a3b8] selection:text-white">
+
       {/* NAVBAR */}
-      <nav className="flex justify-between items-center px-6 py-5 max-w-5xl mx-auto">
-        <div className="font-serif font-bold text-2xl tracking-wide text-[#8c6b4a]">HariSpesial.id</div>
-        <Link href="/login" className="bg-[#2c2c2c] text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-black transition shadow-md">
-          Buka Studio &rarr;
-        </Link>
+      <nav className="flex justify-between items-center px-8 py-6 max-w-6xl mx-auto border-b border-gray-200/50">
+        <div className="flex items-center gap-2">
+          {/* Logo Minimalis */}
+          <div className="w-8 h-8 bg-[#1c1c1c] rounded-full flex items-center justify-center text-white font-serif italic text-xl">H</div>
+          <span className="font-semibold text-xl tracking-tight">HariSpesial.</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <Link href="/login" className="hidden md:block text-sm font-medium text-gray-500 hover:text-black transition">Masuk</Link>
+          <Link href="/buat" className="bg-[#1c1c1c] text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            Mulai Gratis
+          </Link>
+        </div>
       </nav>
 
-      {/* HERO SECTION & MOCKUP HP */}
-      <section className="px-6 pt-10 pb-20 max-w-5xl mx-auto text-center">
-        <h1 className="text-5xl md:text-6xl font-serif font-medium mb-6 leading-tight">
-          Kado digital yang <span className="italic text-[#8c6b4a]">mekar</span><br/>saat dibuka.
-        </h1>
-        <p className="text-gray-600 mb-12 text-lg max-w-xl mx-auto">
-          Tulis pesanmu, pilih tema, dan biarkan dia membukanya pelan-pelan. Tanpa aplikasi, tanpa akun.
-        </p>
-
-        {/* SIMULASI LAYAR HP (MOCKUP) */}
-        <div className="relative mx-auto w-[300px] h-[600px] bg-[#faf8f5] border-[12px] border-[#2c2c2c] rounded-[3rem] shadow-2xl overflow-hidden mb-12 flex flex-col items-center justify-center">
-           {/* Dekorasi dalam HP */}
-           <div className="text-center px-6 w-full">
-              <p className="text-[10px] tracking-widest text-[#8c6b4a] mb-2 uppercase font-bold">Senja, Bunga & Musik</p>
-              <div className="w-full h-[1px] bg-gray-200 mb-4"></div>
-              <p className="text-xs tracking-widest text-gray-400 mb-1 uppercase">Untuk</p>
-              <h2 className="text-4xl font-serif font-bold mb-10 text-[#2c2c2c]">Sarah</h2>
-              
-              <Link href="/buat" className="bg-[#4a3b52] text-white w-full py-4 rounded-full text-sm font-bold shadow-lg flex justify-center items-center gap-2 hover:scale-105 transition-transform">
-                 ✨ Buka undangan
-              </Link>
-              <p className="text-[10px] text-gray-400 mt-4">Ketuk untuk merobek tiket</p>
-           </div>
-           {/* Indikator Home HP */}
-           <div className="absolute bottom-4 w-24 h-1 bg-gray-300 rounded-full"></div>
+      {/* HERO SECTION (Split Layout) */}
+      <section className="px-8 pt-16 pb-24 max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12 overflow-hidden">
+        
+        {/* Teks Kiri */}
+        <div className="w-full md:w-1/2 text-left z-10">
+          <div className="inline-block px-3 py-1 bg-rose-100 text-rose-700 text-xs font-bold tracking-wider rounded-full mb-6">
+            ✨ PLATFORM UNDANGAN DIGITAL
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-[1.1] tracking-tight">
+            Rayakan Momen, <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-400">
+              Tanpa Batasan.
+            </span>
+          </h1>
+          <p className="text-gray-500 text-lg mb-10 leading-relaxed max-w-md">
+            Ubah cara Anda mengundang. Buat website undangan premium atau kado digital eksklusif yang menyesuaikan dengan gaya personal Anda hanya dalam 3 menit.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link href="/buat" className="bg-[#1c1c1c] text-white px-8 py-4 rounded-full font-semibold text-center hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl">
+              Buat Undangan Sekarang &rarr;
+            </Link>
+          </div>
         </div>
 
-        {/* TOMBOL CALL TO ACTION UTAMA */}
-        <Link href="/buat" className="bg-[#8c6b4a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#70553b] transition shadow-xl inline-block">
-          Buat Kado Sekarang
-        </Link>
-      </section>
-
-      {/* BAGIAN CARA KERJA (Seperti di Video) */}
-      <section className="px-6 py-24 bg-[#efebe1]">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-sm font-bold tracking-[0.2em] text-[#8c6b4a] mb-3 uppercase">Cara Kerja</h2>
-          <h3 className="text-3xl md:text-4xl font-serif mb-16 text-[#2c2c2c]">Tanpa aplikasi, tanpa akun — untukmu maupun penerima.</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Step 1 */}
-            <div className="bg-[#f5f2eb] p-8 rounded-3xl shadow-sm border border-[#e5e0d3]">
-              <div className="w-12 h-12 bg-[#8c6b4a] text-white font-bold rounded-full flex items-center justify-center mb-6 text-xl shadow-md">1</div>
-              <h4 className="font-bold text-xl mb-3">Pilih Penerima & Momen</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">Orang tua, sahabat, kolega, keluarga besar — lalu pilih momen dan warnanya.</p>
-            </div>
-            {/* Step 2 */}
-            <div className="bg-[#f5f2eb] p-8 rounded-3xl shadow-sm border border-[#e5e0d3]">
-              <div className="w-12 h-12 bg-[#8c6b4a] text-white font-bold rounded-full flex items-center justify-center mb-6 text-xl shadow-md">2</div>
-              <h4 className="font-bold text-xl mb-3">Isi & Lihat Pratinjau</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">Tulis salam, foto, surat, lagu. Pratinjau reveal-nya hidup langsung sambil kamu menyusun.</p>
-            </div>
-            {/* Step 3 */}
-            <div className="bg-[#f5f2eb] p-8 rounded-3xl shadow-sm border border-[#e5e0d3]">
-              <div className="w-12 h-12 bg-[#8c6b4a] text-white font-bold rounded-full flex items-center justify-center mb-6 text-xl shadow-md">3</div>
-              <h4 className="font-bold text-xl mb-3">Bagikan Tautan / QR</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">Terbitkan sekali, dapat tautan privat & QR. Penerima cukup buka lewat browser.</p>
-            </div>
+        {/* Visual Kanan - Abstrak Kartu (Bukan HP) */}
+        <div className="w-full md:w-1/2 relative h-[400px] md:h-[500px] flex justify-center items-center">
+          {/* Kartu Belakang */}
+          <div className="absolute top-10 right-10 w-64 h-80 bg-rose-50 rounded-3xl border border-rose-100 shadow-2xl rotate-12 transform transition-transform hover:rotate-6"></div>
+          {/* Kartu Tengah */}
+          <div className="absolute top-20 left-10 w-64 h-80 bg-orange-50 rounded-3xl border border-orange-100 shadow-2xl -rotate-6 transform transition-transform hover:-rotate-12"></div>
+          {/* Kartu Depan */}
+          <div className="absolute z-10 w-72 h-[350px] bg-white rounded-3xl border border-gray-100 shadow-2xl flex flex-col items-center justify-center p-6 text-center transform transition-transform hover:scale-105">
+            <div className="w-20 h-20 bg-gray-50 rounded-full mb-4 flex items-center justify-center text-4xl shadow-inner">💍</div>
+            <h3 className="text-xl font-bold mb-2">Pernikahan Impian</h3>
+            <p className="text-xs text-gray-400 mb-6 uppercase tracking-widest">Akan Segera Hadir</p>
+            <div className="w-full h-10 bg-gray-50 rounded-lg border border-gray-100 mb-2"></div>
+            <div className="w-3/4 h-10 bg-gray-50 rounded-lg border border-gray-100"></div>
           </div>
         </div>
       </section>
 
-      {/* BAGIAN UNTUK SIAPA (Seperti di Video) */}
-      <section className="px-6 py-24 max-w-4xl mx-auto">
-         <h2 className="text-sm font-bold tracking-[0.2em] text-[#8c6b4a] mb-3 uppercase">Yang Berubah</h2>
-         <h3 className="text-3xl md:text-5xl font-serif mb-12 leading-tight">Untuk Semua<br/>Orang Terkasih.</h3>
-         <p className="text-gray-600 mb-12 max-w-xl text-lg">Nggak perlu bingung mau pakai cara apa untuk siapa. Pilih penerimanya, sisanya menyesuaikan.</p>
-         
-         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="border border-[#e5e0d3] bg-[#efebe1] p-8 rounded-3xl hover:shadow-lg transition">
-               <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-sm">🏠</div>
-               <h4 className="font-bold text-xl mb-3">Untuk Orang Tua</h4>
-               <p className="text-gray-600 text-sm leading-relaxed">Ucapan Hari Raya, ulang tahun, atau sekadar terima kasih yang jarang terucap langsung.</p>
+      {/* FITUR UNGGULAN (Beda dari kompetitor) */}
+      <section className="px-8 py-24 bg-[#1c1c1c] text-white md:rounded-[3rem] mx-0 md:mx-4 lg:mx-auto max-w-7xl my-10 shadow-2xl">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-rose-400 font-semibold tracking-widest text-sm uppercase mb-3">Keunggulan Fitur</h2>
+            <h3 className="text-4xl md:text-5xl font-bold">Mengapa Memilih Kami?</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {/* Fitur 1 */}
+            <div className="p-8 bg-gray-800/50 rounded-3xl border border-gray-700 hover:bg-gray-800 transition duration-300">
+              <div className="w-14 h-14 bg-rose-500/20 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-6">🎨</div>
+              <h4 className="text-xl font-bold mb-3">Desain Ultra Modern</h4>
+              <p className="text-gray-400 leading-relaxed text-sm">Tinggalkan template kuno. Sistem kami memastikan setiap undangan terlihat seperti didesain oleh profesional.</p>
             </div>
-            <div className="border border-[#e5e0d3] bg-[#efebe1] p-8 rounded-3xl hover:shadow-lg transition">
-               <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-sm">🤝</div>
-               <h4 className="font-bold text-xl mb-3">Untuk Sahabat</h4>
-               <p className="text-gray-600 text-sm leading-relaxed">Kirim kado kelulusan, penyemangat, peringatan momen lucu, atau ajakan nongkrong berkelas.</p>
+            {/* Fitur 2 */}
+            <div className="p-8 bg-gray-800/50 rounded-3xl border border-gray-700 hover:bg-gray-800 transition duration-300">
+              <div className="w-14 h-14 bg-orange-500/20 text-orange-400 rounded-2xl flex items-center justify-center text-2xl mb-6">⚡</div>
+              <h4 className="text-xl font-bold mb-3">Sistem Real-time</h4>
+              <p className="text-gray-400 leading-relaxed text-sm">Ubah nama, tanggal, atau detail acara kapan saja. Tamu Anda akan selalu melihat versi terbaru secara instan.</p>
             </div>
-         </div>
+            {/* Fitur 3 */}
+            <div className="p-8 bg-gray-800/50 rounded-3xl border border-gray-700 hover:bg-gray-800 transition duration-300">
+              <div className="w-14 h-14 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center text-2xl mb-6">🔒</div>
+              <h4 className="text-xl font-bold mb-3">Privasi Terjamin</h4>
+              <p className="text-gray-400 leading-relaxed text-sm">Tidak ada data yang bocor. Anda pegang kendali penuh atas siapa saja yang berhak membuka kado digital Anda.</p>
+            </div>
+          </div>
+        </div>
       </section>
 
     </main>
