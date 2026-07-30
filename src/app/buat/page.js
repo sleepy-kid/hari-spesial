@@ -1,137 +1,210 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; 
-import { db } from "../lib/firebase"; // Kita cuma import db (Firestore)
+import { db } from "../lib/firebase"; 
 import { collection, addDoc } from "firebase/firestore";
 
 export default function BuatUndangan() {
   const router = useRouter();
   
+  // State Form
   const [jenisAcara, setJenisAcara] = useState("Pernikahan");
-  const [mempelaiPria, setMempelaiPria] = useState("");
-  const [mempelaiWanita, setMempelaiWanita] = useState("");
-  const [namaUltah, setNamaUltah] = useState("");
-  const [umur, setUmur] = useState("");
-  const [tanggal, setTanggal] = useState("");
+  const [mempelaiPria, setMempelaiPria] = useState("Romeo");
+  const [mempelaiWanita, setMempelaiWanita] = useState("Juliet");
+  const [namaUltah, setNamaUltah] = useState("Mega");
+  const [umur, setUmur] = useState("25");
+  const [tanggal, setTanggal] = useState("2026-12-31");
   
-  // State khusus Foto
+  // State Foto
   const [foto, setFoto] = useState(null);
+  const [fotoPreview, setFotoPreview] = useState(""); // Khusus untuk Live Preview
   
   const [loading, setLoading] = useState(false);
 
-const handleSimpan = async (e) => {
+  // Efek untuk membuat preview foto lokal (tanpa upload dulu)
+  useEffect(() => {
+    if (!foto) {
+        setFotoPreview("");
+        return;
+    }
+    const objectUrl = URL.createObjectURL(foto);
+    setFotoPreview(objectUrl);
+    
+    return () => URL.revokeObjectURL(objectUrl); // Bersihkan memori
+  }, [foto]);
+
+  const handleSimpan = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       let fotoUrl = "";
 
-      // 1. JALUR TIKUS: Upload foto ke ImgBB
+      // JALUR TIKUS: Upload foto ke ImgBB
       if (foto) {
         const formData = new FormData();
         formData.append("image", foto);
-        
-        // Menggunakan API Key ImgBB milik Anda
         const imgbbAPI = "19043b8f0d4415d3f1a92b8ae12e6c80"; 
         
-        try {
-          const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPI}`, {
-            method: "POST",
-            body: formData,
-          });
-          
-          if (!res.ok) {
-             alert(`Gagal terhubung ke ImgBB. Status: ${res.status}`);
-             setLoading(false);
-             return;
-          }
-
-          const dataImg = await res.json();
-          
-          if (dataImg.success) {
-            // Jika sukses, kita ambil link url gambarnya
-            fotoUrl = dataImg.data.url; 
-          } else {
-            console.error("Gagal upload gambar ke ImgBB", dataImg);
-            alert("ImgBB menolak gambar Anda. Coba gambar lain.");
-            setLoading(false);
-            return;
-          }
-        } catch (fetchError) {
-           console.error("Error saat fetch ke ImgBB:", fetchError);
-           alert("Terjadi kesalahan jaringan saat mengirim gambar.");
-           setLoading(false);
-           return;
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPI}`, {
+          method: "POST",
+          body: formData,
+        });
+        
+        const dataImg = await res.json();
+        
+        if (dataImg.success) {
+          fotoUrl = dataImg.data.url; 
+        } else {
+          alert("Gagal upload gambar ke ImgBB. Silakan coba tanpa gambar dulu.");
         }
       }
 
-      // ... (Kode bagian bawah tetap sama) ...
+      // Susun data undangan
+      const dataUndangan = {
+        jenisAcara: jenisAcara,
+        tanggalAcara: tanggal,
+        fotoUtama: fotoUrl, 
+        dibuatPada: new Date().toISOString()
+      };
+
+      if (jenisAcara === "Pernikahan") {
+        dataUndangan.pria = mempelaiPria;
+        dataUndangan.wanita = mempelaiWanita;
+      } else {
+        dataUndangan.namaUltah = namaUltah;
+        dataUndangan.umur = umur;
+      }
+
+      // Simpan ke Firebase
+      const docRef = await addDoc(collection(db, "undangan"), dataUndangan);
+      router.push(`/undangan/${docRef.id}`); 
+      
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Terjadi kesalahan saat menyimpan data.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] text-[#0f172a] p-8 pb-20 font-sans">
-      <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-100 mt-10">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-[#0f172a]">Detail Acara</h1>
-          <Link href="/" className="text-sm text-slate-400 hover:text-rose-500 font-medium">Batal ✕</Link>
+    <main className="min-h-screen flex flex-col lg:flex-row bg-[#f8fafc] text-[#0f172a] font-sans">
+      
+      {/* KOLOM KIRI: FORMULIR */}
+      <div className="w-full lg:w-1/2 p-8 lg:p-12 overflow-y-auto max-h-screen">
+        <div className="max-w-xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold text-[#0f172a]">Detail Acara</h1>
+            <Link href="/" className="text-sm text-slate-400 hover:text-teal-500 font-medium transition">Batal ✕</Link>
+          </div>
+
+          <form onSubmit={handleSimpan} className="flex flex-col gap-6">
+            {/* INPUT FOTO */}
+            <div className="p-5 bg-white shadow-sm border border-slate-200 rounded-2xl">
+              <label className="block text-sm font-bold text-slate-700 mb-2">Pilih Foto Utama (Opsional)</label>
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={(e) => setFoto(e.target.files[0])}
+                className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition"
+              />
+            </div>
+
+            <div className="p-6 bg-white shadow-sm border border-slate-200 rounded-2xl flex flex-col gap-5">
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Jenis Acara</label>
+                <select value={jenisAcara} onChange={(e) => setJenisAcara(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-slate-50 transition">
+                  <option value="Pernikahan">Pernikahan</option>
+                  <option value="Ulang Tahun">Ulang Tahun</option>
+                </select>
+              </div>
+
+              {jenisAcara === "Pernikahan" ? (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Pria</label>
+                    <input type="text" value={mempelaiPria} onChange={(e) => setMempelaiPria(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500 bg-slate-50 transition" required />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Wanita</label>
+                    <input type="text" value={mempelaiWanita} onChange={(e) => setMempelaiWanita(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500 bg-slate-50 transition" required />
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Nama Spesial</label>
+                    <input type="text" value={namaUltah} onChange={(e) => setNamaUltah(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500 bg-slate-50 transition" required />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Usia Ke-</label>
+                    <input type="number" value={umur} onChange={(e) => setUmur(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500 bg-slate-50 transition" required />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Tanggal Acara</label>
+                <input type="date" value={tanggal} onChange={(e) => setTanggal(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500 bg-slate-50 transition" required />
+              </div>
+            </div>
+
+            <button type="submit" disabled={loading} className={`mt-4 text-white font-bold py-4 rounded-xl transition-all shadow-lg ${loading ? 'bg-slate-400 cursor-not-allowed' : 'bg-[#0f172a] hover:bg-slate-800 hover:-translate-y-1'}`}>
+              {loading ? "Mengunggah & Menyimpan..." : "Terbitkan Kado Digital ✨"}
+            </button>
+          </form>
         </div>
-
-        <form onSubmit={handleSimpan} className="flex flex-col gap-6">
-          
-          {/* FOTO UPLOAD SECTION */}
-          <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl border-dashed">
-            <label className="block text-sm font-bold text-slate-700 mb-2">Pilih Foto Utama (Opsional)</label>
-            <input 
-              type="file" 
-              accept="image/*"
-              onChange={(e) => setFoto(e.target.files[0])}
-              className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
-            />
-            <p className="text-xs text-slate-400 mt-2">Format: JPG, PNG (Maksimal 2MB disarankan)</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1">Jenis Acara</label>
-            <select value={jenisAcara} onChange={(e) => setJenisAcara(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white">
-              <option value="Pernikahan">Pernikahan</option>
-              <option value="Ulang Tahun">Ulang Tahun</option>
-            </select>
-          </div>
-
-          {jenisAcara === "Pernikahan" ? (
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Panggilan Pria</label>
-                <input type="text" value={mempelaiPria} onChange={(e) => setMempelaiPria(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500" required />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Panggilan Wanita</label>
-                <input type="text" value={mempelaiWanita} onChange={(e) => setMempelaiWanita(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500" required />
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Nama Spesial</label>
-                <input type="text" value={namaUltah} onChange={(e) => setNamaUltah(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500" required />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Usia Ke-</label>
-                <input type="number" value={umur} onChange={(e) => setUmur(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500" required />
-              </div>
-            </div>
-          )}
-
-          <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1">Tanggal Acara</label>
-            <input type="date" value={tanggal} onChange={(e) => setTanggal(e.target.value)} className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500" required />
-          </div>
-
-          <button type="submit" disabled={loading} className={`mt-4 text-white font-bold py-4 rounded-xl transition-all shadow-lg ${loading ? 'bg-slate-400 cursor-not-allowed' : 'bg-[#0f172a] hover:bg-slate-800 hover:-translate-y-1'}`}>
-            {loading ? "Mengunggah & Menyimpan..." : "Buat Kado Digital ✨"}
-          </button>
-        </form>
       </div>
+
+      {/* KOLOM KANAN: LIVE PREVIEW (MODE DEMO) */}
+      <div className="w-full lg:w-1/2 bg-[#0f172a] p-8 lg:p-12 flex flex-col items-center justify-center relative border-l border-slate-800">
+         <div className="absolute top-6 right-6 bg-teal-500/20 text-teal-400 border border-teal-500/30 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase flex items-center gap-2">
+            <span className="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></span>
+            Live Preview
+         </div>
+
+         {/* Simulasi Kotak Kado */}
+         <div className="max-w-sm w-full bg-slate-900 border border-slate-700 p-8 rounded-3xl shadow-2xl relative overflow-hidden text-center mt-10">
+            
+            {/* Area Foto Preview */}
+            {fotoPreview && (
+               <div className="w-full aspect-[4/5] overflow-hidden rounded-2xl mb-8 border-4 border-slate-800 shadow-inner bg-slate-800">
+                 <img src={fotoPreview} alt="Preview Foto" className="w-full h-full object-cover" />
+               </div>
+            )}
+            {!fotoPreview && (
+               <div className="w-full aspect-[4/5] rounded-2xl mb-8 border-2 border-dashed border-slate-700 bg-slate-800/50 flex items-center justify-center text-slate-500 text-sm">
+                  Area Foto Utama
+               </div>
+            )}
+
+            {/* Area Teks Preview */}
+            {jenisAcara === "Ulang Tahun" ? (
+               <>
+                 <h2 className="text-sm font-bold text-teal-400 mb-2 uppercase tracking-widest">Selamat Ulang Tahun</h2>
+                 <h1 className="text-3xl font-extrabold text-white mb-4 truncate">{namaUltah || "Nama"}</h1>
+                 <div className="w-10 h-1 bg-teal-500 mx-auto rounded-full mb-6"></div>
+                 <p className="text-slate-400 leading-relaxed text-xs">
+                   Selamat bertambah usia yang ke-<span className="font-bold text-white">{umur || "..."}</span>. <br/>
+                   Di hari spesial pada <span className="font-bold text-white">{tanggal || "..."}</span> ini, kami mendoakan kebaikan selalu menyertaimu.
+                 </p>
+               </>
+            ) : (
+               <>
+                 <p className="text-teal-400 tracking-[0.2em] text-[10px] font-bold mb-4 uppercase">The Wedding Of</p>
+                 <h1 className="text-3xl font-serif text-white mb-4 truncate">{mempelaiPria || "Pria"} & {mempelaiWanita || "Wanita"}</h1>
+                 <div className="w-10 h-1 bg-teal-500 mx-auto rounded-full mb-6"></div>
+                 <p className="text-slate-400 leading-relaxed text-xs">
+                   Dengan penuh rasa syukur, kami mengundang Anda untuk hadir pada hari bahagia kami di tanggal:<br/>
+                   <span className="font-bold text-white text-base mt-3 block">{tanggal || "..."}</span>
+                 </p>
+               </>
+            )}
+         </div>
+      </div>
+
     </main>
   );
 }
