@@ -123,7 +123,7 @@ export default function UndanganDetail({ params }) {
                  <div className="bg-[#0f172a] p-10 rounded-3xl border border-slate-800 shadow-xl hover:border-teal-500/30 transition">
                     <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-xl mx-auto mb-6 text-teal-400">📍</div>
                     <h3 className="text-2xl font-bold text-white mb-2">Lokasi</h3>
-                    <p className="text-slate-400 mb-6 leading-relaxed">Grand Ballroom Hotel<br/>Jl. Sudirman No. 123, Kota Anda</p>
+                    <p className="text-slate-400 mb-6 leading-relaxed">Grand Ballroom Hotel<br/>Jl. anu No. 123, Kota Anda</p>
                     <button className="bg-slate-800 hover:bg-slate-700 text-white py-3 px-6 rounded-lg text-sm transition shadow-md">
                        Buka Google Maps
                     </button>
