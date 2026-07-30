@@ -20,7 +20,7 @@ export default function BuatUndangan() {
   
   const [loading, setLoading] = useState(false);
 
-  const handleSimpan = async (e) => {
+const handleSimpan = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -35,50 +35,38 @@ export default function BuatUndangan() {
         // Menggunakan API Key ImgBB milik Anda
         const imgbbAPI = "19043b8f0d4415d3f1a92b8ae12e6c80"; 
         
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPI}`, {
-          method: "POST",
-          body: formData,
-        });
-        
-        const dataImg = await res.json();
-        
-        if (dataImg.success) {
-          // Jika sukses, kita ambil link url gambarnya
-          fotoUrl = dataImg.data.url; 
-        } else {
-          console.error("Gagal upload gambar ke ImgBB");
+        try {
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPI}`, {
+            method: "POST",
+            body: formData,
+          });
+          
+          if (!res.ok) {
+             alert(`Gagal terhubung ke ImgBB. Status: ${res.status}`);
+             setLoading(false);
+             return;
+          }
+
+          const dataImg = await res.json();
+          
+          if (dataImg.success) {
+            // Jika sukses, kita ambil link url gambarnya
+            fotoUrl = dataImg.data.url; 
+          } else {
+            console.error("Gagal upload gambar ke ImgBB", dataImg);
+            alert("ImgBB menolak gambar Anda. Coba gambar lain.");
+            setLoading(false);
+            return;
+          }
+        } catch (fetchError) {
+           console.error("Error saat fetch ke ImgBB:", fetchError);
+           alert("Terjadi kesalahan jaringan saat mengirim gambar.");
+           setLoading(false);
+           return;
         }
       }
 
-      // 2. Susun data undangan (gabungkan teks dengan link foto tadi)
-      const dataUndangan = {
-        jenisAcara: jenisAcara,
-        tanggalAcara: tanggal,
-        fotoUtama: fotoUrl, 
-        dibuatPada: new Date().toISOString()
-      };
-
-      if (jenisAcara === "Pernikahan") {
-        dataUndangan.pria = mempelaiPria;
-        dataUndangan.wanita = mempelaiWanita;
-      } else {
-        dataUndangan.namaUltah = namaUltah;
-        dataUndangan.umur = umur;
-      }
-
-      // 3. Simpan data lengkapnya ke Firebase Firestore
-      const docRef = await addDoc(collection(db, "undangan"), dataUndangan);
-      
-      // Arahkan ke halaman kado yang sudah jadi
-      router.push(`/undangan/${docRef.id}`); 
-      
-    } catch (error) {
-      console.error("Error: ", error);
-      alert("Gagal menyimpan data. Pastikan koneksi internet stabil.");
-    } finally {
-      setLoading(false);
-    }
-  };
+      // ... (Kode bagian bawah tetap sama) ...
 
   return (
     <main className="min-h-screen bg-[#f8fafc] text-[#0f172a] p-8 pb-20 font-sans">
