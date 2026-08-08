@@ -56,7 +56,6 @@ export default function UndanganDetail({ params }) {
         
         {/* SECTION 1: HERO & FOTO */}
         <section className="min-h-screen flex flex-col items-center justify-center p-6 text-center relative border-b border-slate-800/50">
-           {/* Hiasan Dekorasi */}
            <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-teal-900/20 to-transparent"></div>
            
            <div className="max-w-lg w-full relative z-10 mt-10">
@@ -82,7 +81,6 @@ export default function UndanganDetail({ params }) {
              )}
            </div>
            
-           {/* Indikator Scroll */}
            <div className="absolute bottom-10 animate-bounce text-slate-500 text-sm tracking-widest uppercase">
               Gulir Ke Bawah <br/> ↓
            </div>
@@ -114,19 +112,24 @@ export default function UndanganDetail({ params }) {
                     <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-xl mx-auto mb-6 text-teal-400">📅</div>
                     <h3 className="text-2xl font-bold text-white mb-2">Waktu</h3>
                     <p className="text-slate-400 mb-6">{data.tanggalAcara}</p>
-                    <div className="bg-slate-800/50 py-3 px-6 rounded-lg inline-block text-slate-300 font-mono text-sm">
-                       Pukul 09:00 - Selesai
+                    <div className="bg-slate-800/50 py-3 px-6 rounded-lg inline-block text-[#38bdf8] font-mono text-sm">
+                       Pukul {data.waktuAcara || "09:00 - Selesai"}
                     </div>
                  </div>
 
                  {/* Kartu Lokasi */}
                  <div className="bg-[#0f172a] p-10 rounded-3xl border border-slate-800 shadow-xl hover:border-teal-500/30 transition">
                     <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-xl mx-auto mb-6 text-teal-400">📍</div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Lokasi</h3>
-                    <p className="text-slate-400 mb-6 leading-relaxed">Grand Ballroom Hotel<br/>Jl. anu No. 123, Kota Anda</p>
-                    <button className="bg-slate-800 hover:bg-slate-700 text-white py-3 px-6 rounded-lg text-sm transition shadow-md">
-                       Buka Google Maps
-                    </button>
+                    <h3 className="text-2xl font-bold text-white mb-2">{data.namaLokasi || "Lokasi Acara"}</h3>
+                    <p className="text-slate-400 mb-6 leading-relaxed">{data.alamatLengkap || "Alamat lokasi acara"}</p>
+                    <a 
+                      href={`https://maps.google.com/?q=${encodeURIComponent((data.namaLokasi || "") + " " + (data.alamatLengkap || ""))}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-slate-800 hover:bg-slate-700 text-white py-3 px-6 rounded-lg text-sm transition shadow-md inline-block"
+                    >
+                       Buka Google Maps 🗺️
+                    </a>
                  </div>
               </div>
            </div>
@@ -136,7 +139,7 @@ export default function UndanganDetail({ params }) {
         <section className="py-32 px-6 text-center max-w-2xl mx-auto">
            <h2 className="text-3xl font-serif text-white mb-6">Merupakan suatu kehormatan...</h2>
            <p className="text-slate-400 leading-relaxed mb-12">
-             Kehadiran dan doa restu Anda adalah kado terindah bagi kami. Kami menantikan momen bahagia ini bersama Anda.
+             {data.pesanPenutup || "Kehadiran dan doa restu Anda adalah kado terindah bagi kami. Kami menantikan momen bahagia ini bersama Anda."}
            </p>
            <h3 className="text-xl font-bold text-teal-400 tracking-widest uppercase">
              {data.jenisAcara === "Ulang Tahun" ? data.namaUltah : `${data.pria} & ${data.wanita}`}
